@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net48</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+	<ApplicationHighDpiMode>SystemAware</ApplicationHighDpiMode>
+	<ApplicationUseCompatibleTextRendering>false</ApplicationUseCompatibleTextRendering>
+	<ForceDesignerDpiUnaware>true</ForceDesignerDpiUnaware>
+	<RootNamespace>Dajbych.FactorySync</RootNamespace>
+	<StartupObject>Dajbych.FactorySync.Program</StartupObject>
+	<ApplicationIcon>AppIcon.ico</ApplicationIcon>
+	<ApplicationManifest>app.manifest</ApplicationManifest>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="AppIcon.ico" />
+    <Content Include="TrayIcon.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="ini-parser-new" Version="2.6.2" />
+    <PackageReference Include="System.IO.Compression" Version="4.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\core\Core.csproj" />
+  </ItemGroup>
+
+</Project>

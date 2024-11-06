@@ -1,0 +1,31 @@
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+	<Fragment>
+		<ComponentGroup Id="AppComponents" Directory="INSTALLFOLDER">
+			<Component>
+				<File Source="..\app\bin\$(Configuration)\net48\Core.dll" />
+			</Component>
+			<Component>
+				<File Source="..\app\bin\$(Configuration)\net48\Core.pdb" />
+			</Component>
+			<Component>
+				<File Source="..\app\bin\$(Configuration)\net48\FactorySync.exe" Id="MainAppExecutable" />
+			</Component>
+			<Component>
+				<File Source="..\app\bin\$(Configuration)\net48\FactorySync.exe.config" />
+			</Component>
+			<Component>
+				<File Source="..\app\bin\$(Configuration)\net48\FactorySync.pdb" />
+			</Component>
+			<Component>
+				<File Source="..\app\bin\$(Configuration)\net48\IniParser.dll" />
+			</Component>
+			<Component>
+				<RegistryValue Root="HKCU" Action="write" Key="Software\Microsoft\Windows\CurrentVersion\Run" Name="FactorySync" Value="[#MainAppExecutable]" Type="string" />
+			</Component>
+			<Component Id="ApplicationShortcut" Guid="abe8b55e-611a-4347-9086-9a3291dd12c3">
+				<Shortcut Id="ApplicationShortcut" Name="FactorySync" Target="[#MainAppExecutable]" Directory="ProgramMenuFolder" WorkingDirectory="INSTALLFOLDER" />
+				<RegistryValue Root="HKCU" Key="Software\FactorySync" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
+			</Component>
+		</ComponentGroup>
+	</Fragment>
+</Wix>
