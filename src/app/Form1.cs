@@ -55,11 +55,17 @@ namespace Dajbych.FactorySync {
         }
 
         protected override void OnFormClosing(FormClosingEventArgs e) {
+            allowClose |= e.CloseReason == CloseReason.ApplicationExitCall || e.CloseReason == CloseReason.WindowsShutDown || e.CloseReason == CloseReason.TaskManagerClosing;
             if (!allowClose) {
                 Hide();
                 e.Cancel = true;
             }
             base.OnFormClosing(e);
+        }
+
+        protected override void OnClosed(EventArgs e) {
+            base.OnClosed(e);
+            watcher?.Dispose();
         }
 
         private void OnContextMenuShowClick(object sender, EventArgs e) {
@@ -144,8 +150,10 @@ namespace Dajbych.FactorySync {
             label8.Text = scenario;
             label6.Text = gameTime;
             label7.Text = fileSize;
+            var oldImg = pictureBox.Image;
             pictureBox.Image = preview;
             pictureBox.Visible = preview != null;
+            oldImg?.Dispose();
         }
 
         private void ShowSyncStatus(string name, bool successfullyLoaded, string errorMessage) {
@@ -212,13 +220,14 @@ namespace Dajbych.FactorySync {
                             OnListSelectionChanged(sender, e);
                         }
                     } else if (button.Text == "Select") {
-                        var dialog = new FolderBrowserDialog();
-                        if (Directory.Exists(oneDrive)) dialog.SelectedPath = oneDrive;
-                        if (dialog.ShowDialog() == DialogResult.OK) {
-                            config.Add(name, dialog.SelectedPath);
-                            GameFileChangeDetected(sender, Path.Combine(savesDir, name + ".zip"));
-                            watcher.Restart();
-                            OnListSelectionChanged(sender, e);
+                        using (var dialog = new FolderBrowserDialog()) {
+                            if (Directory.Exists(oneDrive)) dialog.SelectedPath = oneDrive;
+                            if (dialog.ShowDialog() == DialogResult.OK) {
+                                config.Add(name, dialog.SelectedPath);
+                                GameFileChangeDetected(sender, Path.Combine(savesDir, name + ".zip"));
+                                watcher.Restart();
+                                OnListSelectionChanged(sender, e);
+                            }
                         }
                     }
                 }
@@ -241,12 +250,16 @@ namespace Dajbych.FactorySync {
         }
 
         private void OnBackgroundWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e) {
-            if (e.Result is Exception ex) {
-                notifyIcon.BalloonTipText = "Game synchronization failed!";
-                notifyIcon.ShowBalloonTip(10 * 1000);
-                ShowErrorBar(ex.Message);
+            if (InvokeRequired) {
+                Invoke(new MethodInvoker(() => OnBackgroundWorkerCompleted(sender, e)));
+            } else {
+                if (e.Result is Exception ex) {
+                    notifyIcon.BalloonTipText = "Game synchronization failed!";
+                    notifyIcon.ShowBalloonTip(10 * 1000);
+                    ShowErrorBar(ex.Message);
+                }
+                OnListSelectionChanged(sender, e);
             }
-            OnListSelectionChanged(sender, e);
         }
 
     }

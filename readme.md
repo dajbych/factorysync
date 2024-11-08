@@ -4,7 +4,7 @@ Want to play Factorio with your friends? Do you want to play one map together wi
 
 ## Installation
 
-⬇️ [**Download**](https://www.dropbox.com/scl/fi/0nygn0wjnubrfj43dg8ig/FactorySync.msi?rlkey=uts9a3u1jitdk0ttanfpdku7p&st=y87g8bnt&dl=1) ️(version **0.0.1**)
+⬇️ [**Download**](https://www.dropbox.com/scl/fi/0nygn0wjnubrfj43dg8ig/FactorySync.msi?rlkey=uts9a3u1jitdk0ttanfpdku7p&st=y87g8bnt&dl=1) ️(version **0.0.2**)
 
 The utility runs on Windows 64-bit with .NET Framework 4.8, which is part of Windows 10 version 1903 and above. It is distributed in the form of an MSI installation package (Windows Installer).
 

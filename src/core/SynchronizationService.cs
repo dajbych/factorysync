@@ -8,7 +8,7 @@ using System.Transactions;
 
 namespace Dajbych.FactorySync.Core {
 
-    public class SynchronizationService {
+    public sealed class SynchronizationService {
 
         readonly string savesDir;
         readonly Configuration config;
@@ -85,15 +85,15 @@ namespace Dajbych.FactorySync.Core {
                 changedFiles.Remove(sourceFile);
             }
 
-            if (!success) throw new Exception($"cannot read the file: {sourceFile}");
+            if (!success) throw new Exception($"Cannot read the file: {sourceFile}");
 
             var name = Path.GetFileNameWithoutExtension(sourceFile);
             if (!config.Read(name, out var syncDir)) return;
 
             string targetFile;
-            if (sourceFile.StartsWith(savesDir)) {
+            if (sourceFile.StartsWith(savesDir, StringComparison.Ordinal)) {
                 targetFile = Path.Combine(syncDir, Path.GetFileName(sourceFile));
-            } else if (sourceFile.StartsWith(syncDir)) {
+            } else if (sourceFile.StartsWith(syncDir, StringComparison.Ordinal)) {
                 targetFile = Path.Combine(savesDir, Path.GetFileName(sourceFile));
             } else {
                 return;
@@ -130,7 +130,7 @@ namespace Dajbych.FactorySync.Core {
 
         /// <seealso cref="https://en.wikipedia.org/wiki/Transactional_NTFS"/>
         /// <seealso cref="https://learn.microsoft.com/en-us/windows/win32/fileio/transactional-ntfs-portal"/>
-        private void Copy(string sourceFileName, string destFileName, bool overwrite) {
+        private static void Copy(string sourceFileName, string destFileName, bool overwrite) {
             // Transactional NTFS APIs may not be available in future versions of Windows,
             // however Environment.OSVersion lies about the actual OS version
             var tx = new TxFileManager();

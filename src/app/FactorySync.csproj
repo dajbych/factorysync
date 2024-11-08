@@ -1,30 +1,38 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <OutputType>WinExe</OutputType>
-    <TargetFramework>net48</TargetFramework>
-    <UseWindowsForms>true</UseWindowsForms>
-	<ApplicationHighDpiMode>SystemAware</ApplicationHighDpiMode>
-	<ApplicationUseCompatibleTextRendering>false</ApplicationUseCompatibleTextRendering>
-	<ForceDesignerDpiUnaware>true</ForceDesignerDpiUnaware>
-	<RootNamespace>Dajbych.FactorySync</RootNamespace>
-	<StartupObject>Dajbych.FactorySync.Program</StartupObject>
-	<ApplicationIcon>AppIcon.ico</ApplicationIcon>
-	<ApplicationManifest>app.manifest</ApplicationManifest>
-  </PropertyGroup>
+	<PropertyGroup>
+		<OutputType>WinExe</OutputType>
+		<!-- Downgrading to .NET 4.8 was simpler than force the installer to include the latest .NET Runtime. -->
+		<TargetFramework>net48</TargetFramework>
+		<!-- Neither WPF nor UWP nor WinUI (for admin app) support notificationicon. -->
+		<UseWindowsForms>true</UseWindowsForms>
+		<PlatformTarget>AnyCPU</PlatformTarget>
+		<ApplicationHighDpiMode>SystemAware</ApplicationHighDpiMode>
+		<ApplicationUseCompatibleTextRendering>false</ApplicationUseCompatibleTextRendering>
+		<ForceDesignerDpiUnaware>true</ForceDesignerDpiUnaware>
+		<RootNamespace>Dajbych.FactorySync</RootNamespace>
+		<StartupObject>Dajbych.FactorySync.Program</StartupObject>
+		<ApplicationIcon>AppIcon.ico</ApplicationIcon>
+		<ApplicationManifest>app.manifest</ApplicationManifest>
+		<Copyright>© 2024 Václav Dajbych</Copyright>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <Content Include="AppIcon.ico" />
-    <Content Include="TrayIcon.ico" />
-  </ItemGroup>
+	<ItemGroup>
+		<Content Include="AppIcon.ico" />
+		<Content Include="TrayIcon.ico" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="ini-parser-new" Version="2.6.2" />
-    <PackageReference Include="System.IO.Compression" Version="4.3.0" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="ini-parser-new" Version="2.6.2" />
+		<PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="3.3.2">
+		  <PrivateAssets>all</PrivateAssets>
+		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="System.IO.Compression" Version="4.3.0" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\core\Core.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\core\Core.csproj" />
+	</ItemGroup>
 
 </Project>

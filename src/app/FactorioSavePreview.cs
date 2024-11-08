@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 using System.IO.Compression;
 using System.Linq;
 
@@ -10,6 +11,7 @@ namespace Dajbych.FactorySync {
     public class FactorioSavePreview {
 
         public FactorioSavePreview(ZipArchive archive) {
+            if (archive == null) throw new ArgumentNullException(nameof(archive));
             var preview = archive.Entries.Where(e => e.Name == "preview.jpg").SingleOrDefault() ?? archive.Entries.Where(e => e.Name == "preview.png").SingleOrDefault();
             if (preview != null) {
                 using (var bitmapStream = preview.Open()) {

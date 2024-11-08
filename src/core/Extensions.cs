@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.IO.Compression;
 using System.Text;
@@ -132,6 +133,7 @@ namespace Dajbych.FactorySync.Core {
         }
 
         public static string FileSize(this FileInfo fi) {
+            if (fi == null) throw new ArgumentNullException(nameof(fi));
             long bytes = fi.Length;
             string[] sizes = new string[] { "Bytes", "KB", "MB", "GB", "TB" };
             if (bytes == 0) return "0 Bytes";
@@ -141,6 +143,8 @@ namespace Dajbych.FactorySync.Core {
         }
 
         public static bool IsOlderButRevision(this Version a, Version b) {
+            if (a == null) throw new ArgumentNullException(nameof(a));
+            if (b == null) throw new ArgumentNullException(nameof(b));
             if (a.Major < b.Major) {
                 return true;
             } else if (a.Major == b.Major) {
@@ -156,20 +160,27 @@ namespace Dajbych.FactorySync.Core {
         }
 
         public static string ToGameTime(this TimeSpan time) {
-            return (time.Days * 24 + time.Hours).ToString() + ':' + time.Minutes.ToString("00") + ':' + time.Seconds.ToString("00");
+            var H = (time.Days * 24 + time.Hours).ToString(CultureInfo.InvariantCulture);
+            var mm = time.Minutes.ToString("00", CultureInfo.InvariantCulture);
+            var ss = time.Seconds.ToString("00", CultureInfo.InvariantCulture);
+            return $"{H}:{mm}:{ss}";
         }
 
         public static TimeSpan ToGameTime(this string str) {
+            if (str == null) throw new ArgumentNullException(nameof(str));
             var parts = str.Split(':');
             if (parts.Length != 3) throw new ArgumentException("Expected HH:mm:ss", nameof(str));
-            var days = int.Parse(parts[0]) / 24;
-            var hours = int.Parse(parts[0]) % 24;
-            var minutes = int.Parse(parts[1]);
-            var seconds = int.Parse(parts[2]);
+            var days = int.Parse(parts[0], CultureInfo.InvariantCulture) / 24;
+            var hours = int.Parse(parts[0], CultureInfo.InvariantCulture) % 24;
+            var minutes = int.Parse(parts[1], CultureInfo.InvariantCulture);
+            var seconds = int.Parse(parts[2], CultureInfo.InvariantCulture);
             return new TimeSpan(days, hours, minutes, seconds);
         }
 
-        public static string ToGameVersion(this Version ver) => $"{ver.Major}.{ver.Minor}.{ver.Build}-{ver.Revision}";
+        public static string ToGameVersion(this Version ver) {
+            if (ver == null) throw new ArgumentNullException(nameof(ver));
+            return $"{ver.Major}.{ver.Minor}.{ver.Build}-{ver.Revision}";
+        }
 
     }
 

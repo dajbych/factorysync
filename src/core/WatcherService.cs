@@ -4,7 +4,7 @@ using System.IO;
 
 namespace Dajbych.FactorySync.Core {
 
-    public class WatcherService : IDisposable {
+    public sealed class WatcherService : IDisposable {
 
         public event EventHandler<string> ChangeDetected = delegate { };
 
