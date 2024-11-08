@@ -20,6 +20,9 @@
 				<File Source="..\app\bin\$(Configuration)\net48\IniParser.dll" />
 			</Component>
 			<Component>
+				<File Source="..\app\bin\$(Configuration)\net48\ChinhDo.Transactions.FileManager.dll" />
+			</Component>
+			<Component>
 				<RegistryValue Root="HKCU" Action="write" Key="Software\Microsoft\Windows\CurrentVersion\Run" Name="FactorySync" Value="[#MainAppExecutable]" Type="string" />
 			</Component>
 			<Component Id="ApplicationShortcut" Guid="abe8b55e-611a-4347-9086-9a3291dd12c3">

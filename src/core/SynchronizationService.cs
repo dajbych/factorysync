@@ -1,8 +1,10 @@
-﻿using System;
+﻿using ChinhDo.Transactions;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using System.Transactions;
 
 namespace Dajbych.FactorySync.Core {
 
@@ -109,21 +111,33 @@ namespace Dajbych.FactorySync.Core {
             var targetGameSave = FactorioSaveGame.Open(targetFile);
 
             // when target exists, replace it if AND ONLY IF the source game is newer
-            if (sourceGameSave.GameTime > targetGameSave.GameTime) {
+            if (sourceGameSave.GameTime > targetGameSave.GameTime) {              
 
                 // make a backup of the game when the save of the older game version is going to be overwritten
                 if (targetGameSave.Version.IsOlderButRevision(sourceGameSave.Version)) {
                     var backupFile = Path.Combine(syncDir, $"{name}[backup_{targetGameSave.Version.ToString(3)}].zip");
                     if (!File.Exists(backupFile)) {
-                        File.Copy(targetFile, backupFile, false);
+                        Copy(targetFile, backupFile, false);
                     }
                 }
 
                 // overwriting the old game file ⚠
-                File.Copy(sourceFile, targetFile, true);
-
+                Copy(sourceFile, targetFile, true);
+                
             }
 
+        }
+
+        /// <seealso cref="https://en.wikipedia.org/wiki/Transactional_NTFS"/>
+        /// <seealso cref="https://learn.microsoft.com/en-us/windows/win32/fileio/transactional-ntfs-portal"/>
+        private void Copy(string sourceFileName, string destFileName, bool overwrite) {
+            // Transactional NTFS APIs may not be available in future versions of Windows,
+            // however Environment.OSVersion lies about the actual OS version
+            var tx = new TxFileManager();
+            using (var scope = new TransactionScope()) {
+                tx.Copy(sourceFileName, destFileName, overwrite);
+                scope.Complete();
+            }
         }
 
     }
