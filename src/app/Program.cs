@@ -5,8 +5,8 @@ namespace Dajbych.FactorySync {
 
     /*
         icons:
-        https://www.iconsdb.com/white-icons/gear-icon.html
-        https://www.iconsdb.com/orange-icons/gear-icon.html
+        https://www.iconsdb.com/white-icons/settings-4-icon.html
+        https://www.iconsdb.com/orange-icons/settings-4-icon.html
     */
 
     internal static class Program {
