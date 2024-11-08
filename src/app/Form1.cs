@@ -3,6 +3,7 @@ using System;
 using System.Drawing;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace Dajbych.FactorySync {
@@ -28,6 +29,10 @@ namespace Dajbych.FactorySync {
         bool allFilesProcessed; // Sync all files only once
         bool allowVisible; // ContextMenu's Show command used
         bool allowClose; // ContextMenu's Exit command used
+
+        public Form1(string[] args) : this() {
+            if (args != null && args.Contains("showAfterStart")) allowVisible = true;
+        }
 
         public Form1() {
             InitializeComponent();

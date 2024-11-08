@@ -5,5 +5,12 @@
 		<Feature Id="Main">
 			<ComponentGroupRef Id="AppComponents" />
 		</Feature>
+
+		<!-- Launch after install -->
+		<InstallExecuteSequence>
+			<Custom Action="LaunchInstalledExe" After="InstallFinalize"/>
+		</InstallExecuteSequence>
+		<CustomAction Id="LaunchInstalledExe" FileRef="MainAppExecutable" ExeCommand="showAfterStart" Impersonate="yes" Execute="immediate" Return="asyncNoWait" />
+		
 	</Package>
 </Wix>
