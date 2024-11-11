@@ -1,3 +1,5 @@
+#pragma warning disable CA2000 // Dispose objects before losing scope
+
 using System;
 using System.Windows.Forms;
 

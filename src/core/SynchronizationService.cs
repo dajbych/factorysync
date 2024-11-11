@@ -84,19 +84,20 @@ namespace Dajbych.FactorySync.Core {
             lock (sync) {
                 changedFiles.Remove(sourceFile);
             }
+            }
 
-            if (!success) throw new Exception($"Cannot read the file: {sourceFile}");
-
+            // obtain a directory where the save is synchronized to
             var name = Path.GetFileNameWithoutExtension(sourceFile);
             if (!config.Read(name, out var syncDir)) return;
 
+            // determining if the file was changed in the synchronized directory or the directory with game saves
             string targetFile;
             if (sourceFile.StartsWith(savesDir, StringComparison.Ordinal)) {
                 targetFile = Path.Combine(syncDir, Path.GetFileName(sourceFile));
             } else if (sourceFile.StartsWith(syncDir, StringComparison.Ordinal)) {
                 targetFile = Path.Combine(savesDir, Path.GetFileName(sourceFile));
             } else {
-                return;
+                throw new Exception("File is in an unexpected directory");
             }
 
             // when the target file does not exists yet, just copy it

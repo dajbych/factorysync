@@ -1,3 +1,6 @@
+#pragma warning disable CA1031 // Do not catch general exception types
+#pragma warning disable CA1303 // Do not pass literals as localized parameters
+
 using Dajbych.FactorySync.Core;
 using System;
 using System.Drawing;
@@ -8,11 +11,7 @@ using System.Windows.Forms;
 
 namespace Dajbych.FactorySync {
 
-#if NET10_0
-// TODO https://github.com/dotnet/winforms/issues/4649
-#endif
-
-    internal partial class Form1 : Form {
+    internal partial class Form1 : Form, IDisposable {
 
         const string savesLocation = @"%AppData%\Factorio\saves";
         const string configLocation = @"%AppData%\FactorySync\config.ini";
@@ -63,9 +62,10 @@ namespace Dajbych.FactorySync {
             base.OnFormClosing(e);
         }
 
-        protected override void OnClosed(EventArgs e) {
-            base.OnClosed(e);
-            watcher?.Dispose();
+        public new void Dispose() {
+            watcher.ChangeDetected -= GameFileChangeDetected;
+            watcher.Dispose();
+            base.Dispose();
         }
 
         private void OnContextMenuShowClick(object sender, EventArgs e) {
@@ -97,7 +97,7 @@ namespace Dajbych.FactorySync {
         private void OnLoad(object sender, EventArgs e) {
             try {
                 if (!Directory.Exists(savesDir)) {
-                    ShowErrorBar("Cannot find a folder with Factorio game saves.");
+                    ShowErrorBar("Cannot find a folder with Factorio game saves");
                     return;
                 }
 
