@@ -1,5 +1,5 @@
 ﻿<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
-	<Package Name="FactorySync" Manufacturer="Václav Dajbych" Version="0.0.2.0" UpgradeCode="af902f4b-20ba-4205-ba3b-0fa0a92a8f82">
+	<Package Name="FactorySync" Manufacturer="Václav Dajbych" Version="0.0.3.0" UpgradeCode="af902f4b-20ba-4205-ba3b-0fa0a92a8f82">
 		<MajorUpgrade DowngradeErrorMessage="!(loc.DowngradeError)" />
 		<MediaTemplate EmbedCab="yes"/>
 		<Feature Id="Main">

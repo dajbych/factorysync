@@ -55,35 +55,20 @@ namespace Dajbych.FactorySync.Core {
         }
 
         private void ProccessSingleFile(string sourceFile) {
+            try {
 
-            // the file changed event may be raised during writing to a file
-            // this code tries to obtain an exclusive lock to a file, ensuring that writing is done
-            // there is no other way than try & error
-            bool success = false;
-            for (var i = 1; i <= 10 || !success; i++) {
-                try {
-                    using (var stream = File.Open(sourceFile, FileMode.Open, FileAccess.Read, FileShare.None)) {
-                        success = true;
-                    }
-                    break;
-                } catch (UnauthorizedAccessException) {
-                    break;
-                } catch (DirectoryNotFoundException) {
-                    break;
-                } catch (FileNotFoundException) {
-                    break;
-                } catch when (!Thread.CurrentThread.IsBackground) {
-                    break;
-                } catch {
-                    Thread.Sleep(1000);
+                // the file changed event may be raised during writing to a file
+                // this method tries to obtain an exclusive lock to a file, ensuring that writing is done
+                WaitToObtainExclusiveLock(sourceFile);
+
+            } finally {
+
+                // filepath is removed from the queue in the moment it obtains an access to the file,
+                // or after an unsuccessful trial
+                lock (sync) {
+                    changedFiles.Remove(sourceFile);
                 }
-            }
 
-            // filepath is removed from the queue in the moment it obtains an access to the file,
-            // or after an unsuccessful trial
-            lock (sync) {
-                changedFiles.Remove(sourceFile);
-            }
             }
 
             // obtain a directory where the save is synchronized to
@@ -128,6 +113,33 @@ namespace Dajbych.FactorySync.Core {
             }
 
         }
+
+        private static void WaitToObtainExclusiveLock(string sourceFile, int attempts = 10, int waitTimeBetweenAttemptsInMilliseconds = 1000) {
+            // there is no other way than try & error
+            for (var attempt = 1; true; attempt++) {
+                try {
+                    using (var stream = File.Open(sourceFile, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite)) {
+                        return;
+                    }
+                } catch (FileNotFoundException) {
+                    throw;
+                } catch (DirectoryNotFoundException) {
+                    throw;
+                } catch (PathTooLongException) {
+                    throw;
+                } catch (IOException) when (Thread.CurrentThread.IsBackground) {
+                    // more specific exception types are catched earlier
+                    if (attempt < attempts) {
+                        // next attempt
+                        Thread.Sleep(waitTimeBetweenAttemptsInMilliseconds);
+                    } else {
+                        throw;
+                    }
+                } catch {
+                    throw;
+                }
+            }
+        } 
 
         /// <seealso cref="https://en.wikipedia.org/wiki/Transactional_NTFS"/>
         /// <seealso cref="https://learn.microsoft.com/en-us/windows/win32/fileio/transactional-ntfs-portal"/>
